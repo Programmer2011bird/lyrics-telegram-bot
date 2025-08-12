@@ -18,6 +18,8 @@ class scraper:
         }
 
         self.response = requests.get(self.BASE_URL, headers=self.headers)
+        with open("test.html", "w+") as file:
+            file.write(str(self.response))
         self.soup = BeautifulSoup(self.response.text, "html.parser")
 
         lyricsPreview = self.soup.find("div", attrs={"class":"LyricsHeader__Container-sc-5e4b7146-1 hFsUgC"})
@@ -31,7 +33,6 @@ class scraper:
             newline.replace_with("\n")
 
         lyrics = str(lyrics.text)
-        
         lyrics = lyrics.replace(lyricsPreview, "")
 
         print(lyrics)
