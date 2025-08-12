@@ -24,16 +24,19 @@ class scraper:
         lyricsPreview = str(lyricsPreview.text)
         
         lyrics = self.soup.find("div", attrs={"class":"Lyrics__Container-sc-39b434ea-1 gHGicG"})
-        lyrics = str(lyrics.contents)
-        lyrics = lyrics.replace("<br/>", "\n")
-        lyrics = BeautifulSoup(lyrics, "html.parser")
-        lyrics = lyrics.text
+        
+        newlines = lyrics.find_all("br")
+        
+        for newline in newlines:
+            newline.replace_with("\n")
 
+        lyrics = str(lyrics.text)
+        
         lyrics = lyrics.replace(lyricsPreview, "")
 
         print(lyrics)
 
 
 if __name__ == "__main__":
-    SCRAPER: scraper = scraper("K", "Cigarettes after sex")
+    SCRAPER: scraper = scraper("Lovers Rock", "TV girl")
     SCRAPER.get_lyrics()
