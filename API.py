@@ -1,3 +1,4 @@
+from os import wait
 from bs4 import BeautifulSoup
 from lxml import etree, html
 import requests
@@ -23,17 +24,13 @@ class scraper:
         self.dom = etree.HTML(str(self.soup))
 
     def get_lyrics(self) -> str:
-        lyricsPreview = self.dom.xpath("/html/body/div[1]/main/div[2]/div[3]/div/div/div[1]/div/div[2]")[0]
-        lyricsPreview = str(lyricsPreview.text)
+        lyricsPreview = self.dom.xpath("/html/body/div[1]/main/div[2]/div[3]/div/div/div[1]/div")[0]
+        lyricsPreview = str(BeautifulSoup(html.tostring(lyricsPreview), "html.parser").text)
         
-        lyrics_containter = [self.dom.xpath("/html/body/div[1]/main/div[2]/div[3]/div/div/div[1]"),
-                            self.dom.xpath("/html/body/div[1]/main/div[2]/div[3]/div/div/div[3]")]
-        
+        lyrics_containter = self.soup.find_all("div", attrs={"data-lyrics-container":"true"})        
         full_lyrics = ""
 
         for lyric in lyrics_containter:
-            lyric = lyric[0]
-            lyric = BeautifulSoup(html.tostring(lyric), "html.parser")
             newlines = lyric.find_all("br")
 
             for newline in newlines:
@@ -46,22 +43,23 @@ class scraper:
 
         return full_lyrics
 
-    def get_metadata(self):
+    def get_metadata(self) -> dict[str, str]:
         NAME: str = self.dom.xpath("/html/body/div[1]/main/div[1]/div[3]/div/div[1]/div[1]/h1")[0]
         ARTIST: str = self.dom.xpath("/html/body/div[1]/main/div[1]/div[3]/div/div[1]/div[1]/div[1]")[0]
         ALBUM_NAME: str = self.dom.xpath("/html/body/div[1]/main/div[1]/div[3]/div/div[1]/div[2]/div[1]/div")[0]
         RELEASE_DATE: str = self.dom.xpath("/html/body/div[1]/main/div[1]/div[3]/div/div[1]/div[2]/div[2]/span[1]")[0]
-        # IMAGE = self.soup.find("img", attrs={"class":"SizedImage__Image-sc-39a204ed-1 dycjBx SongHeader-desktop__SizedImage-sc-9f88acaa-15 bMLwec"})
+        
+        self.METADATA: dict[str, str] = {
+            "name": BeautifulSoup(html.tostring(NAME), "html.parser").text,
+            "artist": BeautifulSoup(html.tostring(ARTIST), "html.parser").text,
+            "album_name": BeautifulSoup(html.tostring(ALBUM_NAME), "html.parser").text,
+            "release_date": BeautifulSoup(html.tostring(RELEASE_DATE), "html.parser").text
+        }
 
-        print(BeautifulSoup(html.tostring(NAME), "html.parser").text)
-        print(BeautifulSoup(html.tostring(ARTIST), "html.parser").text)
-        print(BeautifulSoup(html.tostring(ALBUM_NAME), "html.parser").text)
-        print(BeautifulSoup(html.tostring(RELEASE_DATE), "html.parser").text)
-        # print(IMAGE.attrs)
-        # TODO: Fix the problem with getting the image src
+        return self.METADATA
 
 
 if __name__ == "__main__":
-    SCRAPER: scraper = scraper("Timeless", "the weeknd")
+    SCRAPER: scraper = scraper("timeless", "the weeknd")
     print(SCRAPER.get_lyrics())
-    SCRAPER.get_metadata()
+    print(SCRAPER.get_metadata())
