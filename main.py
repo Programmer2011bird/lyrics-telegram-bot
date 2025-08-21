@@ -6,11 +6,31 @@ import API
 
 BOT = telebot.TeleBot(conf.API_KEY)
 
+def remove_unwanted_spacing(string:str) -> str:
+    splitted_name: list[str] = string.split(" ")
+
+    for index in range(len(splitted_name)):
+        try:
+            if splitted_name[index] == "":
+                splitted_name.pop(index)
+        except Exception:
+            pass 
+    
+    final_name: str = ""
+    
+    for index in range(len(splitted_name)):
+        final_name += splitted_name[index]
+
+        if index != len(splitted_name)-1:
+            final_name += " "
+
+    return final_name
+
 @BOT.message_handler(commands=["start"])
 def send_welcome(message):
     BOT.reply_to(message, """Hello, welcome To Song Lyrics Bot ! 
 Send the name of your song with the artist like this: [title] - [artist] to get the lyrics or send in the song itself""")
-# TODO: add a bit more formatting to the full_message (Beautify) and fix the problem with spacing in the NAME and ARTIST
+# TODO: Modularize getting the lyrics and sending the final message
 @BOT.message_handler(func=lambda message: True, content_types=["text", "audio"])
 def send_lyrics(message: Message):
     if message.audio:
@@ -35,6 +55,12 @@ Released On: {metadata['release_date']}
         splitted_msg: list[str] = str(message.text).split("-", maxsplit=1)
         ARTIST: str = splitted_msg[1]
         NAME: str = splitted_msg[0]
+
+        ARTIST = remove_unwanted_spacing(ARTIST)
+        NAME = remove_unwanted_spacing(NAME)
+
+        print(ARTIST)
+        print(NAME)
 
         SCRAPER: API.scraper = API.scraper(NAME, ARTIST)
 
