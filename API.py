@@ -58,8 +58,3 @@ class scraper:
 
         return self.METADATA
 
-
-if __name__ == "__main__":
-    SCRAPER: scraper = scraper("timeless", "the weeknd")
-    print(SCRAPER.get_lyrics())
-    print(SCRAPER.get_metadata())
