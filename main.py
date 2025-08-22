@@ -26,28 +26,33 @@ def remove_unwanted_spacing(string:str) -> str:
 
     return final_name
 
-@BOT.message_handler(commands=["start"])
-def send_welcome(message):
-    BOT.reply_to(message, """Hello, welcome To Song Lyrics Bot ! 
-Send the name of your song with the artist like this: [title] - [artist] to get the lyrics or send in the song itself""")
-# TODO: Modularize getting the lyrics and sending the final message
-@BOT.message_handler(func=lambda message: True, content_types=["text", "audio"])
-def send_lyrics(message: Message):
-    if message.audio:
-        ARTIST: str = str(message.audio.performer)
-        NAME: str = str(message.audio.title)
+def get_lyrics_and_format(ARTIST: str, NAME: str) -> str:
+    SCRAPER: API.scraper = API.scraper(NAME, ARTIST)
 
-        SCRAPER: API.scraper = API.scraper(NAME, ARTIST)
+    lyrics: str = SCRAPER.get_lyrics()
+    metadata: dict[str, str] = SCRAPER.get_metadata()
 
-        lyrics: str = SCRAPER.get_lyrics()
-        metadata: dict[str, str] = SCRAPER.get_metadata()
-        
-        full_message: str = f"""Song Name: {metadata['name']} 
+    message: str = f"""Song Name: {metadata['name']} 
 Artist: {metadata['artist']}
 Album: {metadata['album_name']}
 Released On: {metadata['release_date']}
 
 {lyrics}"""
+
+    return message
+
+@BOT.message_handler(commands=["start"])
+def send_welcome(message):
+    BOT.reply_to(message, """Hello, welcome To Song Lyrics Bot ! 
+Send the name of your song with the artist like this: [title] - [artist] to get the lyrics or send in the song itself""")
+
+@BOT.message_handler(func=lambda message: True, content_types=["text", "audio"])
+def send_lyrics(message: Message):
+    if message.audio:
+        ARTIST: str = str(message.audio.performer)
+        NAME: str = str(message.audio.title)
+        
+        full_message: str = get_lyrics_and_format(ARTIST, NAME)
 
         BOT.send_message(message.chat.id, full_message)
 
@@ -58,21 +63,8 @@ Released On: {metadata['release_date']}
 
         ARTIST = remove_unwanted_spacing(ARTIST)
         NAME = remove_unwanted_spacing(NAME)
-
-        print(ARTIST)
-        print(NAME)
-
-        SCRAPER: API.scraper = API.scraper(NAME, ARTIST)
-
-        lyrics: str = SCRAPER.get_lyrics()
-        metadata: dict[str, str] = SCRAPER.get_metadata()
         
-        full_message: str = f"""Song Name: {metadata['name']} 
-Artist: {metadata['artist']}
-Album: {metadata['album_name']}
-Released On: {metadata['release_date']}
-
-{lyrics}"""
+        full_message: str = get_lyrics_and_format(ARTIST, NAME)
 
         BOT.send_message(message.chat.id, full_message)
 
