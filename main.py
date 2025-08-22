@@ -32,12 +32,19 @@ def get_lyrics_and_format(ARTIST: str, NAME: str) -> str:
     lyrics: str = SCRAPER.get_lyrics()
     metadata: dict[str, str] = SCRAPER.get_metadata()
 
-    message: str = f"""Song Name: {metadata['name']} 
-Artist: {metadata['artist']}
-Album: {metadata['album_name']}
-Released On: {metadata['release_date']}
+    message: str = f"""
+*- - - - - -*
+🎵 Song Name: *{metadata['name']}*
+🎤 By: *{metadata['artist']}*
+💽 Album: *{metadata['album_name']}*
+📆 Released On: *{metadata['release_date']}*
+*- - - - - -*
+{lyrics}
 
-{lyrics}"""
+*- - - - - -*
+🤖 Lyrics By: *@SongLyricsTelegramBot*
+*- - - - - -*
+"""
 
     return message
 
@@ -54,7 +61,7 @@ def send_lyrics(message: Message):
         
         full_message: str = get_lyrics_and_format(ARTIST, NAME)
 
-        BOT.send_message(message.chat.id, full_message)
+        BOT.send_message(message.chat.id, full_message, parse_mode="Markdown")
 
     if message.text:
         splitted_msg: list[str] = str(message.text).split("-", maxsplit=1)
@@ -66,7 +73,7 @@ def send_lyrics(message: Message):
         
         full_message: str = get_lyrics_and_format(ARTIST, NAME)
 
-        BOT.send_message(message.chat.id, full_message)
+        BOT.send_message(message.chat.id, full_message, parse_mode="Markdown")
 
 
 BOT.infinity_polling()
