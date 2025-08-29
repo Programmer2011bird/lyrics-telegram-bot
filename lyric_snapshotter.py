@@ -1,3 +1,5 @@
+import imgkit
+
 TEST_LYRICS: str = """
 Thought I almost died in my dream again (Baby, almost died)
 Fightin' for my life, I couldn't breathe again
@@ -17,7 +19,7 @@ Insomnia relieve, oh
 Talk to me, without you, I can't breathe
 """
 
-def snapshot_lyrics(lyrics: str):
+def snapshot_lyrics(lyrics: str) -> str:
     splitted_lyrics: list[str] = lyrics.split("\n")
     
     for index in range(len(splitted_lyrics)):
@@ -39,7 +41,7 @@ def snapshot_lyrics(lyrics: str):
     
     return snapshot_sentences
 
-def add_to_html(name: str, artist_name: str, content: str, html_file_name: str):
+def add_to_html(name: str, artist_name: str, lyrics: str) -> str:
     HTML_PLACEHOLDER: str = """
 <!doctype html>
 <html>
@@ -173,7 +175,7 @@ def add_to_html(name: str, artist_name: str, content: str, html_file_name: str):
         <div class="artist">{artist_name}</div>
       </div>
       <div class="lyrics">
-        {content}
+        {lyrics}
       </div>
     </div>
 
@@ -181,14 +183,21 @@ def add_to_html(name: str, artist_name: str, content: str, html_file_name: str):
   </div>
 </body>
 </html>"""
-    with open(html_file_name, "w+") as file:
+    with open("test.html", "w+") as file:
         file.write(HTML_PLACEHOLDER)
 
-def turn_html_to_image(html_file_name: str):
+    return HTML_PLACEHOLDER
+
+def turn_html_to_image(content: str, out_image_name: str) -> str:
     # 1: turn the html to an image with imgkit
-    pass
+    options = {"format":"png","width":"900","height":"520","disable-smart-width":""}
+
+    imgkit.from_string(content, f"./{out_image_name}", options)
+
+    return f"./out_image_name"
 
 
 if __name__ == "__main__":
-    print(snapshot_lyrics(TEST_LYRICS))
-    add_to_html(name="After Hours", artist_name="The weeknd", content=snapshot_lyrics(TEST_LYRICS), html_file_name="test.html")
+    lyrics_snapshot: str = snapshot_lyrics(TEST_LYRICS)
+    html = add_to_html(name="After Hours", artist_name="The weeknd", lyrics=lyrics_snapshot)
+    print(turn_html_to_image(html, "test.png"))
