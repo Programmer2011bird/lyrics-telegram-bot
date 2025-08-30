@@ -1,24 +1,5 @@
 import imgkit
 
-TEST_LYRICS: str = """
-Thought I almost died in my dream again (Baby, almost died)
-Fightin' for my life, I couldn't breathe again
-I'm fallin' in too deep (Oh, oh)
-Without you, I can't sleep (Fallin' in)
-'Cause my heart belongs to you
-I'll risk it all for you
-I want you next to me
-This time, I'll never leave
-I wanna share babies
-Protection, we won't need
-Your body next to me
-Is just a memory
-I'm fallin' in too deep, oh
-Without you, I can't sleep
-Insomnia relieve, oh
-Talk to me, without you, I can't breathe
-"""
-
 def snapshot_lyrics(lyrics: str) -> str:
     splitted_lyrics: list[str] = lyrics.split("\n")
     
@@ -79,8 +60,7 @@ def add_to_html(name: str, artist_name: str, lyrics: str) -> str:
   .snapshot{
     width:900px;
     height:520px;
-    padding:36px;
-    box-sizing:border-box;
+    padding:36px; box-sizing:border-box;
     background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
     box-shadow: 0 18px 40px rgba(3,10,30,0.65);
     position:relative;
@@ -188,15 +168,9 @@ def add_to_html(name: str, artist_name: str, lyrics: str) -> str:
     return HTML_PLACEHOLDER
 
 def turn_html_to_image(content: str, out_image_name: str) -> str:
-    # 1: turn the html to an image with imgkit
     options = {"format":"png","width":"900","height":"520","disable-smart-width":""}
 
     imgkit.from_string(content, f"./{out_image_name}", options)
 
     return f"./{out_image_name}"
 
-
-if __name__ == "__main__":
-    lyrics_snapshot: str = snapshot_lyrics(TEST_LYRICS)
-    html = add_to_html(name="After Hours", artist_name="The weeknd", lyrics=lyrics_snapshot)
-    print(turn_html_to_image(html, "test.png"))
