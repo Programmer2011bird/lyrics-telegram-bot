@@ -68,7 +68,7 @@ def add_to_html(name: str, artist_name: str, lyrics: str) -> str:
 
   html,body { height:100%; margin:0; }
   body{
-    background: linear-gradient(180deg,#061028 0%,#0a2746 100%);
+    background: #0a2746;
     font-family: 'SpotifyCircular', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     color:#e9f6ff;
     display:flex;
@@ -81,7 +81,6 @@ def add_to_html(name: str, artist_name: str, lyrics: str) -> str:
     height:520px;
     padding:36px;
     box-sizing:border-box;
-    border-radius:20px;
     background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
     box-shadow: 0 18px 40px rgba(3,10,30,0.65);
     position:relative;
@@ -194,7 +193,7 @@ def turn_html_to_image(content: str, out_image_name: str) -> str:
 
     imgkit.from_string(content, f"./{out_image_name}", options)
 
-    return f"./out_image_name"
+    return f"./{out_image_name}"
 
 
 if __name__ == "__main__":
