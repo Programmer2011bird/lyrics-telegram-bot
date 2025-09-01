@@ -88,7 +88,9 @@ def send_lyric_snapshot_img(message: Message):
 
         img_path: str = get_lyric_snapshot(NAME, ARTIST, lyrics, str(message.chat.id))
         
-        BOT.send_photo(message.chat.id, img_path)
+        BOT.send_photo(message.chat.id, open(img_path, "rb"), timeout=180)
+        
+        lyric_snapshotter.delete_image(img_path)
 
     if message.text:
         splitted_msg: list[str] = str(message.text).split("-", maxsplit=1)
@@ -103,7 +105,9 @@ def send_lyric_snapshot_img(message: Message):
 
         img_path: str = get_lyric_snapshot(NAME, ARTIST, lyrics, str(message.chat.id))
         
-        BOT.send_photo(message.chat.id, img_path)
+        BOT.send_photo(message.chat.id, open(img_path, "rb"), timeout=180)
+
+        lyric_snapshotter.delete_image(img_path)
 
 
 @BOT.message_handler(commands=["start"])
@@ -129,13 +133,10 @@ def proceed(message: Message):
 def handle_callback(call: CallbackQuery) -> None:
     if call.data == "lyrics":
         print("lyrics")
-        print(MESSAGE_OBJ)
         send_lyrics(message=MESSAGE_OBJ)
     
     elif call.data == "spotify":
         print("spotify")
-        print(MESSAGE_OBJ)
         send_lyric_snapshot_img(message=MESSAGE_OBJ)
-
 
 BOT.infinity_polling()
