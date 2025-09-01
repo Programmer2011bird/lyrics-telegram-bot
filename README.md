@@ -6,7 +6,5 @@
 2. [x] being able to make a spotify-like lyric snapshot image : 
   * - [x] song name / artist
   * - [x] the lyric snapshot
-3. [ ] Choosing between Full lyrics and spotify lyrics snapshots in the bot
+3. [x] Choosing between Full lyrics and spotify lyrics snapshots in the bot
 
-> [!NOTE]
-> Still under development !
