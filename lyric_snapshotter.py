@@ -1,4 +1,6 @@
 import imgkit
+import os
+
 
 def snapshot_lyrics(lyrics: str) -> str:
     splitted_lyrics: list[str] = lyrics.split("\n")
@@ -170,7 +172,9 @@ def add_to_html(name: str, artist_name: str, lyrics: str) -> str:
 def turn_html_to_image(content: str, out_image_name: str) -> str:
     options = {"format":"png","width":"900","height":"520","disable-smart-width":""}
 
-    imgkit.from_string(content, f"./{out_image_name}", options)
+    imgkit.from_string(content, f"./{out_image_name}.png", options)
 
-    return f"./{out_image_name}"
+    return f"./{out_image_name}.png"
 
+def delete_image(image_path: str) -> None:
+    os.remove(image_path)
